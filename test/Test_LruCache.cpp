@@ -15,6 +15,7 @@ TEST_F(Test_LruCache, EmptyLruCacheCapacity) {
   const size_t capacity = 5;
   const ads::LruCache<int, int> cache(capacity);
   EXPECT_EQ(cache.capacity(), capacity);
+  EXPECT_EQ(cache.size(), 0u);
 }
 
 TEST_F(Test_LruCache, EmptyLruCacheCopyCapacity) {
@@ -22,6 +23,7 @@ TEST_F(Test_LruCache, EmptyLruCacheCopyCapacity) {
   const ads::LruCache<int, int> cache(capacity);
   const ads::LruCache<int, int> cacheCopy = cache;
   EXPECT_EQ(cacheCopy.capacity(), capacity);
+  EXPECT_EQ(cacheCopy.size(), 0u);
 }
 
 TEST_F(Test_LruCache, EmptyLruCacheMoveCapacity) {
@@ -29,6 +31,7 @@ TEST_F(Test_LruCache, EmptyLruCacheMoveCapacity) {
   ads::LruCache<int, int> cache(capacity);
   const ads::LruCache<int, int> cacheMoved = std::move(cache);
   EXPECT_EQ(cacheMoved.capacity(), capacity);
+  EXPECT_EQ(cacheMoved.size(), 0u);
 }
 
 TEST_F(Test_LruCache, EmptyLruCacheGetThrows) {
@@ -42,6 +45,7 @@ TEST_F(Test_LruCache, InsertAndGetSucceeds) {
   ads::LruCache<int, int> cache(capacity);
   cache.insert(1, 100);
   EXPECT_EQ(cache.tryGet(1), 100);
+  EXPECT_EQ(cache.size(), 1u);
 }
 
 TEST_F(Test_LruCache, InsertAndOverwriteSucceeds) {
@@ -50,6 +54,7 @@ TEST_F(Test_LruCache, InsertAndOverwriteSucceeds) {
   cache.insert(1, 100);
   cache.insert(1, 101);
   EXPECT_EQ(cache.tryGet(1), 101);
+  EXPECT_EQ(cache.size(), 1u);
 }
 
 TEST_F(Test_LruCache, InsertMultipleAndSucceeds) {
@@ -61,6 +66,7 @@ TEST_F(Test_LruCache, InsertMultipleAndSucceeds) {
   EXPECT_EQ(cache.tryGet(1), 100);
   EXPECT_EQ(cache.tryGet(2), 200);
   EXPECT_EQ(cache.tryGet(3), 300);
+  EXPECT_EQ(cache.size(), 3u);
 }
 
 TEST_F(Test_LruCache, InsertBeyondCapacitySucceeds) {
@@ -70,8 +76,11 @@ TEST_F(Test_LruCache, InsertBeyondCapacitySucceeds) {
   cache.insert(2, 200);
   cache.insert(3, 300);
   cache.insert(4, 400);
+  EXPECT_EQ(cache.size(), 4u);
   cache.insert(5, 500);
+  EXPECT_EQ(cache.size(), 5u);
   cache.insert(6, 600);
+  EXPECT_EQ(cache.size(), 5u);
   EXPECT_EQ(cache.tryGet(2), 200);
   EXPECT_EQ(cache.tryGet(3), 300);
   EXPECT_EQ(cache.tryGet(4), 400);
@@ -89,11 +98,13 @@ TEST_F(Test_LruCache, GetUpdatesMru) {
   EXPECT_EQ(cache.tryGet(1), 100);
   EXPECT_EQ(cache.tryGet(2), 200);
   EXPECT_EQ(cache.tryGet(3), 300);
+  EXPECT_EQ(cache.size(), 3u);
 
   // Update the MRU
   cache.tryGet(1);
   cache.tryGet(3);
   cache.insert(4, 400);
+  EXPECT_EQ(cache.size(), 3u);
   EXPECT_THROW(cache.tryGet(2), ads::KeyNotFoundException);
   EXPECT_EQ(cache.tryGet(1), 100);
   EXPECT_EQ(cache.tryGet(3), 300);

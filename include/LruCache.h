@@ -61,6 +61,8 @@ public:
   /* public const API */
   std::size_t capacity() const { return capacity_; }
 
+  std::size_t size() const { return keyToValueIndex_.size(); }
+
 private:
   void maybeEvictLru() {
     if (keyToValueIndex_.size() <= capacity_) {
