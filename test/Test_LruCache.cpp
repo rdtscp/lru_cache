@@ -43,3 +43,39 @@ TEST_F(Test_LruCache, InsertAndGetSucceeds) {
   cache.insert(1, 100);
   EXPECT_EQ(cache.tryGet(1), 100);
 }
+
+TEST_F(Test_LruCache, InsertAndOverwriteSucceeds) {
+  const size_t capacity = 5;
+  ads::LruCache<int, int> cache(capacity);
+  cache.insert(1, 100);
+  cache.insert(1, 101);
+  EXPECT_EQ(cache.tryGet(1), 101);
+}
+
+TEST_F(Test_LruCache, InsertMultipleAndSucceeds) {
+  const size_t capacity = 5;
+  ads::LruCache<int, int> cache(capacity);
+  cache.insert(1, 100);
+  cache.insert(2, 200);
+  cache.insert(3, 300);
+  EXPECT_EQ(cache.tryGet(1), 100);
+  EXPECT_EQ(cache.tryGet(2), 200);
+  EXPECT_EQ(cache.tryGet(3), 300);
+}
+
+TEST_F(Test_LruCache, InsertBeyondCapacitySucceeds) {
+  const size_t capacity = 5;
+  ads::LruCache<int, int> cache(capacity);
+  cache.insert(1, 100);
+  cache.insert(2, 200);
+  cache.insert(3, 300);
+  cache.insert(4, 400);
+  cache.insert(5, 500);
+  cache.insert(6, 600);
+  EXPECT_EQ(cache.tryGet(2), 200);
+  EXPECT_EQ(cache.tryGet(3), 300);
+  EXPECT_EQ(cache.tryGet(4), 400);
+  EXPECT_EQ(cache.tryGet(5), 500);
+  EXPECT_EQ(cache.tryGet(6), 600);
+  EXPECT_THROW(cache.tryGet(1), ads::KeyNotFoundException);
+}

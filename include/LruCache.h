@@ -13,7 +13,7 @@ template <typename KeyT, typename ValueT> class LruCache {
 private:
   /* Type definitions for internals. */
   template <typename T, typename V> using MapT = std::unordered_map<T, V>;
-  using ValueContainer = std::list<ValueT>;
+  using ValueContainer = std::list<std::pair<KeyT, ValueT>>;
   using ValueContainerIterator = typename ValueContainer::iterator;
   using KeyToValueContainerIteratorIndex = MapT<KeyT, ValueContainerIterator>;
 
@@ -34,13 +34,14 @@ public:
     const auto it = keyToValueIndex_.find(key);
     // We haven't seen this key before.
     if (it == keyToValueIndex_.end()) {
-      orderedValues_.emplace_front(value);
+      orderedValues_.emplace_front(key, value);
       keyToValueIndex_[key] = orderedValues_.begin();
     } else {
       ValueContainerIterator valueIterator = it->second;
-      *valueIterator = value;
-      keyToValueIndex_.try_emplace(key, valueIterator);
+      valueIterator->second = value;
+      keyToValueIndex_[key] = valueIterator;
     }
+    maybeEvictLru();
   }
 
   /* public mutable API */
@@ -51,12 +52,23 @@ public:
     }
 
     const ValueContainerIterator &valueIterator = it->second;
-    return *valueIterator;
+    return valueIterator->second;
   }
 
 public:
   /* public const API */
   std::size_t capacity() const { return capacity_; }
+
+private:
+  void maybeEvictLru() {
+    if (keyToValueIndex_.size() <= capacity_) {
+      return;
+    }
+
+    const auto lruItemIt = orderedValues_.rbegin();
+    keyToValueIndex_.erase(lruItemIt->first);
+    orderedValues_.resize(capacity_);
+  }
 
 private:
   const std::size_t capacity_;
