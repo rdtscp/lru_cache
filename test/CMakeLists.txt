@@ -13,6 +13,11 @@ set_target_properties(libgmock PROPERTIES
   "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
 )
 
-add_executable(runExampleTests Test_Example.cpp  main.cpp)
-target_link_libraries(runExampleTests libgtest libgmock)
-add_test(ExampleUnitTests runExampleTests)
+add_executable(runLruCacheTests Test_LruCache.cpp  main.cpp)
+target_link_libraries(runLruCacheTests libgtest libgmock)
+add_test(LruCacheUnitTests runLruCacheTests)
+
+
+add_executable(runExceptionsTests Test_Exceptions.cpp  main.cpp)
+target_link_libraries(runExceptionsTests libgtest libgmock)
+add_test(ExceptionsUnitTests runExceptionsTests)
