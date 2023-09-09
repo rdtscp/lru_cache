@@ -69,6 +69,9 @@ IF(NOT GTEST_INSTALLED MATCHES TRUE)
   )
 ENDIF(NOT GTEST_INSTALLED MATCHES TRUE)
 
+add_compile_options(-fsanitize=address)
+add_link_options(-fsanitize=address)
+
 enable_testing()
 add_subdirectory(test)
 

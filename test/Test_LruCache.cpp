@@ -110,3 +110,43 @@ TEST_F(Test_LruCache, GetUpdatesMru) {
   EXPECT_EQ(cache.tryGet(3), 300);
   EXPECT_EQ(cache.tryGet(4), 400);
 }
+
+TEST_F(Test_LruCache, Evict) {
+  const size_t capacity = 3;
+  ads::LruCache<int, int> cache(capacity);
+  cache.insert(1, 100);
+  cache.insert(2, 200);
+  cache.insert(3, 300);
+  EXPECT_EQ(cache.tryGet(1), 100);
+  EXPECT_EQ(cache.tryGet(2), 200);
+  EXPECT_EQ(cache.tryGet(3), 300);
+  EXPECT_EQ(cache.size(), 3u);
+
+  // Update the MRU
+  cache.evict(2);
+  EXPECT_EQ(cache.tryGet(1), 100);
+  EXPECT_THROW(cache.tryGet(2), ads::KeyNotFoundException);
+  EXPECT_EQ(cache.tryGet(3), 300);
+  EXPECT_EQ(cache.size(), 2u);
+}
+
+TEST_F(Test_LruCache, InsertAfterEvictCapacitySucceeds) {
+  const size_t capacity = 5;
+  ads::LruCache<int, int> cache(capacity);
+  cache.insert(1, 100);
+  cache.insert(2, 200);
+  cache.insert(3, 300);
+  cache.insert(4, 400);
+  cache.insert(5, 500);
+  EXPECT_EQ(cache.size(), 5u);
+  cache.evict(3);
+  EXPECT_EQ(cache.size(), 4u);
+  cache.insert(6, 600);
+  EXPECT_EQ(cache.size(), 5u);
+  EXPECT_EQ(cache.tryGet(1), 100);
+  EXPECT_EQ(cache.tryGet(2), 200);
+  EXPECT_EQ(cache.tryGet(4), 400);
+  EXPECT_EQ(cache.tryGet(5), 500);
+  EXPECT_EQ(cache.tryGet(6), 600);
+  EXPECT_THROW(cache.tryGet(3), ads::KeyNotFoundException);
+}
