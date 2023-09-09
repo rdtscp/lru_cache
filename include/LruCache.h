@@ -21,6 +21,8 @@ public:
   LruCache(const std::size_t capacity) : capacity_(capacity) {}
 
 public:
+  /* public mutable API */
+
   void insert(const KeyT &key, const ValueT &value) {
     // Two scenarios:
     //   1. We have never seen this key before.
@@ -45,7 +47,16 @@ public:
     maybeEvictLru();
   }
 
-  /* public mutable API */
+  void evict(const KeyT &key) {
+    const auto it = keyToValueIndex_.find(key);
+    if (it == keyToValueIndex_.end()) {
+      return;
+    }
+
+    orderedValues_.erase(it->second);
+    keyToValueIndex_.erase(it);
+  }
+
   const ValueT &tryGet(const KeyT &key) {
     const auto it = keyToValueIndex_.find(key);
     if (it == keyToValueIndex_.end()) {
