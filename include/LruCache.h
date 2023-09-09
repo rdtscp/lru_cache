@@ -32,19 +32,17 @@ public:
     //   2. We have seen this key before.
     //      - Replace its value
     //      - Mark as MRU
-    //      - If over-capacity, evict LRU
     const auto it = keyToValueIndex_.find(key);
     // We haven't seen this key before.
     if (it == keyToValueIndex_.end()) {
       orderedValues_.emplace_front(key, value);
       keyToValueIndex_[key] = orderedValues_.begin();
+      maybeEvictLru();
     } else {
       ValueContainerIterator valueIterator = it->second;
       valueIterator->second = value;
-      keyToValueIndex_[key] = valueIterator;
       markMRU(valueIterator);
     }
-    maybeEvictLru();
   }
 
   void evict(const KeyT &key) {
