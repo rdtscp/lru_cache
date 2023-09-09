@@ -79,3 +79,23 @@ TEST_F(Test_LruCache, InsertBeyondCapacitySucceeds) {
   EXPECT_EQ(cache.tryGet(6), 600);
   EXPECT_THROW(cache.tryGet(1), ads::KeyNotFoundException);
 }
+
+TEST_F(Test_LruCache, GetUpdatesMru) {
+  const size_t capacity = 3;
+  ads::LruCache<int, int> cache(capacity);
+  cache.insert(1, 100);
+  cache.insert(2, 200);
+  cache.insert(3, 300);
+  EXPECT_EQ(cache.tryGet(1), 100);
+  EXPECT_EQ(cache.tryGet(2), 200);
+  EXPECT_EQ(cache.tryGet(3), 300);
+
+  // Update the MRU
+  cache.tryGet(1);
+  cache.tryGet(3);
+  cache.insert(4, 400);
+  EXPECT_THROW(cache.tryGet(2), ads::KeyNotFoundException);
+  EXPECT_EQ(cache.tryGet(1), 100);
+  EXPECT_EQ(cache.tryGet(3), 300);
+  EXPECT_EQ(cache.tryGet(4), 400);
+}

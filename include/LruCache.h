@@ -40,6 +40,7 @@ public:
       ValueContainerIterator valueIterator = it->second;
       valueIterator->second = value;
       keyToValueIndex_[key] = valueIterator;
+      markMRU(valueIterator);
     }
     maybeEvictLru();
   }
@@ -52,6 +53,7 @@ public:
     }
 
     const ValueContainerIterator &valueIterator = it->second;
+    markMRU(valueIterator);
     return valueIterator->second;
   }
 
@@ -68,6 +70,13 @@ private:
     const auto lruItemIt = orderedValues_.rbegin();
     keyToValueIndex_.erase(lruItemIt->first);
     orderedValues_.resize(capacity_);
+  }
+
+  void markMRU(ValueContainerIterator valueIterator) {
+    if (valueIterator != orderedValues_.begin()) {
+      orderedValues_.splice(orderedValues_.begin(), orderedValues_,
+                            valueIterator, std::next(valueIterator));
+    }
   }
 
 private:
