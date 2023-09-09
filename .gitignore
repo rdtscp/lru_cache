@@ -1,32 +1,21 @@
-# Prerequisites
-*.d
+# Ignore CMake Files.
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
 
-# Compiled Object files
-*.slo
-*.lo
-*.o
-*.obj
+# Ignore Build Files.
+build/
 
-# Precompiled Headers
-*.gch
-*.pch
+# Ignore VSCode Settings.
+.vscode/c_cpp_properties.json
+.vscode/settings.json
+.vscode/ipch/*
 
-# Compiled Dynamic libraries
-*.so
-*.dylib
-*.dll
-
-# Fortran module files
-*.mod
-*.smod
-
-# Compiled Static libraries
-*.lai
-*.la
-*.a
-*.lib
-
-# Executables
-*.exe
-*.out
-*.app
+# Ignore Python Cache
+__pycache__
