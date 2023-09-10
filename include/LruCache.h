@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <list>
+#include <optional>
 #include <stdexcept>
 #include <unordered_map>
 
