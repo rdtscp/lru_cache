@@ -78,11 +78,18 @@ public:
     return valueIterator->second;
   }
 
+  void clear() {
+    orderedValues_.clear();
+    keyToValueIndex_.clear();
+  }
+
 public:
   /* public const API */
   std::size_t capacity() const { return capacity_; }
 
   std::size_t size() const { return keyToValueIndex_.size(); }
+
+  bool empty() const { return size() == 0u; }
 
 private:
   void maybeEvictLru() {
