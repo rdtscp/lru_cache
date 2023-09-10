@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <list>
+#include <optional>
 #include <stdexcept>
 #include <unordered_map>
 
@@ -59,6 +60,17 @@ public:
     const auto it = keyToValueIndex_.find(key);
     if (it == keyToValueIndex_.end()) {
       throw ads::KeyNotFoundException(std::to_string(key));
+    }
+
+    const ValueContainerIterator &valueIterator = it->second;
+    markMRU(valueIterator);
+    return valueIterator->second;
+  }
+
+  const std::optional<ValueT> get(const KeyT &key) {
+    const auto it = keyToValueIndex_.find(key);
+    if (it == keyToValueIndex_.end()) {
+      return std::nullopt;
     }
 
     const ValueContainerIterator &valueIterator = it->second;

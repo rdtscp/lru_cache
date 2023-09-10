@@ -150,3 +150,24 @@ TEST_F(Test_LruCache, InsertAfterEvictCapacitySucceeds) {
   EXPECT_EQ(cache.tryGet(6), 600);
   EXPECT_THROW(cache.tryGet(3), ads::KeyNotFoundException);
 }
+
+TEST_F(Test_LruCache, GetOptionalApi) {
+  const size_t capacity = 5;
+  ads::LruCache<int, int> cache(capacity);
+  cache.insert(1, 100);
+  cache.insert(2, 200);
+  cache.insert(3, 300);
+  cache.insert(4, 400);
+  cache.insert(5, 500);
+  EXPECT_EQ(cache.size(), 5u);
+  cache.evict(3);
+  EXPECT_EQ(cache.size(), 4u);
+  cache.insert(6, 600);
+  EXPECT_EQ(cache.size(), 5u);
+  EXPECT_EQ(cache.get(1).value(), 100);
+  EXPECT_EQ(cache.get(2).value(), 200);
+  EXPECT_EQ(cache.get(4).value(), 400);
+  EXPECT_EQ(cache.get(5).value(), 500);
+  EXPECT_EQ(cache.get(6).value(), 600);
+  EXPECT_EQ(cache.get(3), std::nullopt);
+}
