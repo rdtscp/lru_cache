@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include <iterator>
 #include <list>
 #include <optional>
 #include <stdexcept>
@@ -83,6 +84,10 @@ public:
     keyToValueIndex_.clear();
   }
 
+  typename ValueContainer::iterator begin() { return orderedValues_.begin(); }
+
+  typename ValueContainer::iterator end() { return orderedValues_.end(); }
+
 public:
   /* public const API */
   std::size_t capacity() const { return capacity_; }
@@ -90,6 +95,22 @@ public:
   std::size_t size() const { return keyToValueIndex_.size(); }
 
   bool empty() const { return size() == 0u; }
+
+  typename ValueContainer::const_iterator begin() const {
+    return orderedValues_.begin();
+  }
+
+  typename ValueContainer::const_iterator end() const {
+    return orderedValues_.end();
+  }
+
+  typename ValueContainer::const_iterator cbegin() const {
+    return orderedValues_.cbegin();
+  }
+
+  typename ValueContainer::const_iterator cend() const {
+    return orderedValues_.cend();
+  }
 
 private:
   void maybeEvictLru() {

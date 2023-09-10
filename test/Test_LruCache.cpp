@@ -196,3 +196,40 @@ TEST_F(Test_LruCache, ClearAndEmpty) {
   EXPECT_EQ(cache.size(), 0u);
   EXPECT_TRUE(cache.empty());
 }
+
+TEST_F(Test_LruCache, Iterators) {
+  const size_t capacity = 5;
+  ads::LruCache<int, int> cache(capacity);
+  cache.insert(1, 100);
+  cache.insert(2, 200);
+  cache.insert(3, 300);
+  cache.insert(4, 400);
+  cache.insert(5, 500);
+  const std::vector<std::pair<int, int>> expectedKeyValues = {
+      std::make_pair(5, 500), std::make_pair(4, 400), std::make_pair(3, 300),
+      std::make_pair(2, 200), std::make_pair(1, 100)};
+  std::vector<std::pair<int, int>> actualKeyValues;
+  for (const auto &item : cache) {
+    actualKeyValues.push_back(item);
+  }
+  EXPECT_EQ(expectedKeyValues, actualKeyValues);
+}
+
+TEST_F(Test_LruCache, ConstIterators) {
+  const size_t capacity = 5;
+  ads::LruCache<int, int> tempCache(capacity);
+  tempCache.insert(1, 100);
+  tempCache.insert(2, 200);
+  tempCache.insert(3, 300);
+  tempCache.insert(4, 400);
+  tempCache.insert(5, 500);
+  const ads::LruCache<int, int> cache = std::move(tempCache);
+  const std::vector<std::pair<int, int>> expectedKeyValues = {
+      std::make_pair(5, 500), std::make_pair(4, 400), std::make_pair(3, 300),
+      std::make_pair(2, 200), std::make_pair(1, 100)};
+  std::vector<std::pair<int, int>> actualKeyValues;
+  for (const auto &item : cache) {
+    actualKeyValues.push_back(item);
+  }
+  EXPECT_EQ(expectedKeyValues, actualKeyValues);
+}
