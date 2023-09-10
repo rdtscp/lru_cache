@@ -110,7 +110,7 @@ TEST_F(test_lru_cache, GetUpdatesMru) {
   EXPECT_EQ(cache.find(4)->second, 400);
 }
 
-TEST_F(test_lru_cache, Evict) {
+TEST_F(test_lru_cache, Erase) {
   const size_t capacity = 3;
   ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
@@ -127,6 +127,11 @@ TEST_F(test_lru_cache, Evict) {
   EXPECT_EQ(cache.find(2), cache.end());
   EXPECT_EQ(cache.find(3)->second, 300);
   EXPECT_EQ(cache.size(), 2u);
+
+  const auto it = cache.find(3);
+  ASSERT_NE(it, cache.end());
+  cache.erase(it);
+  EXPECT_EQ(cache.size(), 1u);
 }
 
 TEST_F(test_lru_cache, InsertAfterEvictCapacitySucceeds) {
