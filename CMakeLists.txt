@@ -33,40 +33,14 @@ IF(NOT GTEST_INSTALLED MATCHES TRUE)
   
   find_package(Threads REQUIRED)
   
-  # Enable ExternalProject CMake module
-  include(ExternalProject)
-  
-  # Download and install GoogleTest
-  ExternalProject_Add(
-    gtest
+  include(FetchContent)
+  FetchContent_Declare(
+    googletest
     URL https://github.com/google/googletest/archive/refs/tags/v1.14.0.zip
-    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gtest
-    # Disable install step
-    INSTALL_COMMAND ""
   )
-  
-  # Get GTest source and binary directories from CMake project
-  ExternalProject_Get_Property(gtest source_dir binary_dir)
-  
-  # Create a libgtest target to be used as a dependency by test programs
-  add_library(libgtest IMPORTED STATIC GLOBAL)
-  add_dependencies(libgtest gtest)
-  
-  # Set libgtest properties
-  set_target_properties(libgtest PROPERTIES
-    "IMPORTED_LOCATION" "${binary_dir}/googlemock/gtest/libgtest.a"
-    "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
-  )
-  
-  # Create a libgmock target to be used as a dependency by test programs
-  add_library(libgmock IMPORTED STATIC GLOBAL)
-  add_dependencies(libgmock gtest)
-  
-  # Set libgmock properties
-  set_target_properties(libgmock PROPERTIES
-    "IMPORTED_LOCATION" "${binary_dir}/googlemock/libgmock.a"
-    "IMPORTED_LINK_INTERFACE_LIBRARIES" "${CMAKE_THREAD_LIBS_INIT}"
-  )
+  # For Windows: Prevent overriding the parent project's compiler/linker settings
+  set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+  FetchContent_MakeAvailable(googletest)
 ENDIF(NOT GTEST_INSTALLED MATCHES TRUE)
 
 add_compile_options(-fsanitize=address)
