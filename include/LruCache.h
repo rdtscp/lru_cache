@@ -57,26 +57,28 @@ public:
     keyToValueIndex_.erase(it);
   }
 
-  const ValueT &tryGet(const KeyT &key) {
+  typename ValueContainer::iterator find(const KeyT &key) {
     const auto it = keyToValueIndex_.find(key);
     if (it == keyToValueIndex_.end()) {
-      throw ads::KeyNotFoundException(std::to_string(key));
+      return end();
     }
 
-    const ValueContainerIterator &valueIterator = it->second;
+    const typename ValueContainer::iterator &valueIterator = it->second;
     markMRU(valueIterator);
-    return valueIterator->second;
+
+    return valueIterator;
   }
 
-  const std::optional<ValueT> get(const KeyT &key) {
+  typename ValueContainer::const_iterator find(const KeyT &key) const {
     const auto it = keyToValueIndex_.find(key);
     if (it == keyToValueIndex_.end()) {
-      return std::nullopt;
+      return end();
     }
 
-    const ValueContainerIterator &valueIterator = it->second;
+    const typename ValueContainer::const_iterator &valueIterator = it->second;
     markMRU(valueIterator);
-    return valueIterator->second;
+
+    return valueIterator;
   }
 
   void clear() {
