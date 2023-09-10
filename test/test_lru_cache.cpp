@@ -1,64 +1,64 @@
 
-#include "../include/LruCache.h"
+#include "../include/lru_cache.h"
 
 #include "gtest/gtest.h"
 
-class Test_LruCache : public ::testing::Test {
+class test_lru_cache : public ::testing::Test {
 protected:
-  Test_LruCache() {
+  test_lru_cache() {
     // You can do set-up work for each test here.
   }
 };
 
-TEST_F(Test_LruCache, EmptyLruCacheCapacity) {
+TEST_F(test_lru_cache, Emptylru_cacheCapacity) {
   const size_t capacity = 5;
-  const ads::LruCache<int, int> cache(capacity);
+  const ads::lru_cache<int, int> cache(capacity);
   EXPECT_EQ(cache.capacity(), capacity);
   EXPECT_EQ(cache.size(), 0u);
 }
 
-TEST_F(Test_LruCache, EmptyLruCacheCopyCapacity) {
+TEST_F(test_lru_cache, Emptylru_cacheCopyCapacity) {
   const size_t capacity = 5;
-  const ads::LruCache<int, int> cache(capacity);
-  const ads::LruCache<int, int> cacheCopy = cache;
+  const ads::lru_cache<int, int> cache(capacity);
+  const ads::lru_cache<int, int> cacheCopy = cache;
   EXPECT_EQ(cacheCopy.capacity(), capacity);
   EXPECT_EQ(cacheCopy.size(), 0u);
 }
 
-TEST_F(Test_LruCache, EmptyLruCacheMoveCapacity) {
+TEST_F(test_lru_cache, Emptylru_cacheMoveCapacity) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> cache(capacity);
-  const ads::LruCache<int, int> cacheMoved = std::move(cache);
+  ads::lru_cache<int, int> cache(capacity);
+  const ads::lru_cache<int, int> cacheMoved = std::move(cache);
   EXPECT_EQ(cacheMoved.capacity(), capacity);
   EXPECT_EQ(cacheMoved.size(), 0u);
 }
 
-TEST_F(Test_LruCache, EmptyLruCacheGetThrows) {
+TEST_F(test_lru_cache, Emptylru_cacheGetThrows) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   EXPECT_EQ(cache.find(0), cache.end());
 }
 
-TEST_F(Test_LruCache, InsertAndGetSucceeds) {
+TEST_F(test_lru_cache, InsertAndGetSucceeds) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
   EXPECT_EQ(cache.find(1)->second, 100);
   EXPECT_EQ(cache.size(), 1u);
 }
 
-TEST_F(Test_LruCache, InsertAndOverwriteSucceeds) {
+TEST_F(test_lru_cache, InsertAndOverwriteSucceeds) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
   cache.insert(1, 101);
   EXPECT_EQ(cache.find(1)->second, 101);
   EXPECT_EQ(cache.size(), 1u);
 }
 
-TEST_F(Test_LruCache, InsertMultipleAndSucceeds) {
+TEST_F(test_lru_cache, InsertMultipleAndSucceeds) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
   cache.insert(2, 200);
   cache.insert(3, 300);
@@ -68,9 +68,9 @@ TEST_F(Test_LruCache, InsertMultipleAndSucceeds) {
   EXPECT_EQ(cache.size(), 3u);
 }
 
-TEST_F(Test_LruCache, InsertBeyondCapacitySucceeds) {
+TEST_F(test_lru_cache, InsertBeyondCapacitySucceeds) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
   cache.insert(2, 200);
   cache.insert(3, 300);
@@ -88,9 +88,9 @@ TEST_F(Test_LruCache, InsertBeyondCapacitySucceeds) {
   EXPECT_EQ(cache.find(1), cache.end());
 }
 
-TEST_F(Test_LruCache, GetUpdatesMru) {
+TEST_F(test_lru_cache, GetUpdatesMru) {
   const size_t capacity = 3;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
   cache.insert(2, 200);
   cache.insert(3, 300);
@@ -110,9 +110,9 @@ TEST_F(Test_LruCache, GetUpdatesMru) {
   EXPECT_EQ(cache.find(4)->second, 400);
 }
 
-TEST_F(Test_LruCache, Evict) {
+TEST_F(test_lru_cache, Evict) {
   const size_t capacity = 3;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
   cache.insert(2, 200);
   cache.insert(3, 300);
@@ -129,9 +129,9 @@ TEST_F(Test_LruCache, Evict) {
   EXPECT_EQ(cache.size(), 2u);
 }
 
-TEST_F(Test_LruCache, InsertAfterEvictCapacitySucceeds) {
+TEST_F(test_lru_cache, InsertAfterEvictCapacitySucceeds) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
   cache.insert(2, 200);
   cache.insert(3, 300);
@@ -150,9 +150,9 @@ TEST_F(Test_LruCache, InsertAfterEvictCapacitySucceeds) {
   EXPECT_EQ(cache.find(3), cache.end());
 }
 
-TEST_F(Test_LruCache, ClearAndEmpty) {
+TEST_F(test_lru_cache, ClearAndEmpty) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
   cache.insert(2, 200);
   cache.insert(3, 300);
@@ -169,9 +169,9 @@ TEST_F(Test_LruCache, ClearAndEmpty) {
   EXPECT_TRUE(cache.empty());
 }
 
-TEST_F(Test_LruCache, Iterators) {
+TEST_F(test_lru_cache, Iterators) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   cache.insert(1, 100);
   cache.insert(2, 200);
   cache.insert(3, 300);
@@ -187,15 +187,15 @@ TEST_F(Test_LruCache, Iterators) {
   EXPECT_EQ(expectedKeyValues, actualKeyValues);
 }
 
-TEST_F(Test_LruCache, ConstIterators) {
+TEST_F(test_lru_cache, ConstIterators) {
   const size_t capacity = 5;
-  ads::LruCache<int, int> tempCache(capacity);
+  ads::lru_cache<int, int> tempCache(capacity);
   tempCache.insert(1, 100);
   tempCache.insert(2, 200);
   tempCache.insert(3, 300);
   tempCache.insert(4, 400);
   tempCache.insert(5, 500);
-  const ads::LruCache<int, int> cache = std::move(tempCache);
+  const ads::lru_cache<int, int> cache = std::move(tempCache);
   const std::vector<std::pair<int, int>> expectedKeyValues = {
       std::make_pair(5, 500), std::make_pair(4, 400), std::make_pair(3, 300),
       std::make_pair(2, 200), std::make_pair(1, 100)};

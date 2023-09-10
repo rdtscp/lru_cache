@@ -1,11 +1,11 @@
-#include "../include/LruCache.h"
+#include "../include/lru_cache.h"
 
 #include <benchmark/benchmark.h>
 
 static void BM_Insert(benchmark::State &state) {
   const std::size_t capacity = state.range(0);
   const std::size_t numberItemsToInsert = capacity * 3;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   for (auto _ : state) {
     for (std::size_t i = 0; i < numberItemsToInsert; ++i) {
       cache.insert(i, i);
@@ -18,7 +18,7 @@ BENCHMARK(BM_Insert)->Args({10000});
 static void BM_Find(benchmark::State &state) {
   const std::size_t capacity = state.range(0);
   const std::size_t numberItemsToInsert = capacity * 3;
-  ads::LruCache<int, int> cache(capacity);
+  ads::lru_cache<int, int> cache(capacity);
   for (std::size_t i = 0; i < numberItemsToInsert; ++i) {
     cache.insert(i, i);
   }
