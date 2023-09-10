@@ -7,8 +7,6 @@
 #include <stdexcept>
 #include <unordered_map>
 
-#include "Exceptions.h"
-
 namespace ads {
 
 template <typename KeyT, typename ValueT> class LruCache {
@@ -47,7 +45,7 @@ public:
     }
   }
 
-  void evict(const KeyT &key) {
+  void erase(const KeyT &key) {
     const auto it = keyToValueIndex_.find(key);
     if (it == keyToValueIndex_.end()) {
       return;
@@ -55,6 +53,11 @@ public:
 
     orderedValues_.erase(it->second);
     keyToValueIndex_.erase(it);
+  }
+
+  void erase(const typename ValueContainer::iterator &it) { erase(it->first); }
+  void erase(const typename ValueContainer::const_iterator &it) {
+    erase(it->first);
   }
 
   typename ValueContainer::iterator find(const KeyT &key) {

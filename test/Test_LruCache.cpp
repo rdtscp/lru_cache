@@ -1,9 +1,8 @@
-#include "../include/Exceptions.h"
+
 #include "../include/LruCache.h"
 
 #include "gtest/gtest.h"
 
-// The fixture for testing class Project1. From google test primer.
 class Test_LruCache : public ::testing::Test {
 protected:
   Test_LruCache() {
@@ -123,7 +122,7 @@ TEST_F(Test_LruCache, Evict) {
   EXPECT_EQ(cache.size(), 3u);
 
   // Update the MRU
-  cache.evict(2);
+  cache.erase(2);
   EXPECT_EQ(cache.find(1)->second, 100);
   EXPECT_EQ(cache.find(2), cache.end());
   EXPECT_EQ(cache.find(3)->second, 300);
@@ -139,7 +138,7 @@ TEST_F(Test_LruCache, InsertAfterEvictCapacitySucceeds) {
   cache.insert(4, 400);
   cache.insert(5, 500);
   EXPECT_EQ(cache.size(), 5u);
-  cache.evict(3);
+  cache.erase(3);
   EXPECT_EQ(cache.size(), 4u);
   cache.insert(6, 600);
   EXPECT_EQ(cache.size(), 5u);
@@ -161,7 +160,7 @@ TEST_F(Test_LruCache, ClearAndEmpty) {
   cache.insert(5, 500);
   EXPECT_FALSE(cache.empty());
   EXPECT_EQ(cache.size(), 5u);
-  cache.evict(3);
+  cache.erase(3);
   EXPECT_EQ(cache.size(), 4u);
   cache.insert(6, 600);
   EXPECT_EQ(cache.size(), 5u);
