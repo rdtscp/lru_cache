@@ -66,6 +66,17 @@ public:
     return valueIterator->second;
   }
 
+  const std::optional<ValueT> get(const KeyT &key) {
+    const auto it = keyToValueIndex_.find(key);
+    if (it == keyToValueIndex_.end()) {
+      return std::nullopt;
+    }
+
+    const ValueContainerIterator &valueIterator = it->second;
+    markMRU(valueIterator);
+    return valueIterator->second;
+  }
+
 public:
   /* public const API */
   std::size_t capacity() const { return capacity_; }
