@@ -8,5 +8,5 @@ IF(NOT GBENCHMARK_INSTALLED MATCHES TRUE)
   FetchContent_MakeAvailable(googlebenchmark)
 ENDIF(NOT GBENCHMARK_INSTALLED MATCHES TRUE)
 
-add_executable(runLruCacheBenchmarks Benchmark_LruCache.cpp)
-target_link_libraries(runLruCacheBenchmarks benchmark::benchmark)
+add_executable(run_lru_cache_benchmark benchmark_lru_cache.cpp)
+target_link_libraries(run_lru_cache_benchmark benchmark::benchmark)
